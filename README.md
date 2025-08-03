@@ -14,3 +14,8 @@ CourseSurveySummaryStatistics - Function for calculating some descriptive summar
 Date2TermConverter - Function for converting time/date values to academic terms.
   input: 1 dataframe, the string value of the name of the column with the date/time values you are converting, the string value of the name of the new column you want created to house the academic term.
   output: a new dataframe with a column that has the appropriate academic term.
+
+Quick_pdfMerger - A quick function to further simplify us of pypdf PdfMerger function so that I don't need to have an adobe subscription or use a sketchy website.
+  input: a list of pdf files that you want merged together.
+  output: a single pdf file containing all of the pages from the input list.
+  
