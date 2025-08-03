@@ -19,3 +19,6 @@ Quick_pdfMerger - A quick function to further simplify us of pypdf PdfMerger fun
   input: a list of pdf files that you want merged together.
   output: a single pdf file containing all of the pages from the input list.
   
+ - A quick and easy function for converting long lists of strings in excel into lists for use in SQL WHERE clause.
+  input: a string value that is the name of the .csv that contains the list of strings that you want converted.
+  output: a list that can be copied and pasted into an SQL WHERE ________ IN () clause.
