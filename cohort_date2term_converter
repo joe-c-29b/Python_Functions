@@ -33,4 +33,7 @@ def cohort_date2term_converter(file: str, CurrentTerm: int):
             else:
                 df.loc[i,'lastTerm'] = df.loc[i,'EFFECTIVE_TERM']
     output = df[['STU_ID','COHORT_DES','EFFECTIVE_TERM','lastTerm']]
+    ## alternate to "return output" if you only need the converted version of the .csv
+    #pd.to_csv(file,index=False)
     return output
+    
