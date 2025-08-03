@@ -1,0 +1,70 @@
+import pandas as pd
+import numpy as np
+from datetime import date
+
+course_df = pd.read_csv('coursedata.csv')
+student_df = pd.read_csv('studentdata.csv')
+key = pd.read_csv('key.csv')
+#SR stands for "Success Rate"
+
+def CourseSurveySummaryStatistics (course_df, student_df, key):
+  course_df['SR'] = course_df['Successes']/course_df['Attempts']
+  course_df['SR_course'] = course_df['Cou_Successes']/course_df['Cou_Attempts']
+  course_df['SR_subject'] = course_df['Sub_Successes']/course_df['Sub_Attempts']
+  course_df['AvgWs_course'] = course_df['Cou_Withdraws']/course_df['Cou_Offered']
+  course_df['AvgWs_subject'] = course_df['Sub_Withdraws']/course_df['SubCou_Offered']
+  course_df['LastYear_SR_course'] = course_df['Prev_Cou_Successes']/course_df['Prev_Cou_Attempts']
+  course_df['LastYear_SR_subject'] = course_df['Prev_Sub_Successes']/course_df['Prev_Sub_Attempts']
+  course_df['LastYear_AvgWs_course'] = course_df['Prev_Cou_Withdraws']/course_df['Prev_CouSec_Offered']
+  course_df['LastYear_AvgWs_subject'] = course_df['Prev_Sub_Withdraws']/course_df['Prev_SubSec_Offered']
+
+  student_df['stu_SR'] = student_df['Curr_St_Successes']/student_df['Curr_St_Attempts']
+  student_df['adm_SR'] = student_df['Adm_St_Successes']/student_df['Adm_St_Attempts']
+  student_df['at_SR'] = student_df['Prev_St_Successes']/student_df['Prev_St_Attempts']
+
+  for i in course_df.index:
+    cou = course_df.at[i,'Course']
+    student_list = key.loc[key['Course']==cou,'TECH_ID'].to_list()
+    clss = student_df[student_df['TECH_ID'].isin(student_list)]
+    course_df.at[i,'avgSR'] = clss['stu_SR'].mean()
+    course_df.at[i,'adm_avgSR'] = clss['adm_SR'].mean()
+    course_df.at[i,'at_avgSR'] = clss['at_SR'].mean()
+    course_df.at[i,'avgCreditLoad'] = clss['CreditLoad'].mean()
+    course_df.at[i,'avgRCCCredits'] = clss['Tot_RCC_Credits'].mean()
+    course_df.at[i,'avgUGCredits'] = clss['Tot_UG_Credits'].mean()
+    
+    CourseStudentAttempts = clss['Curr_St_Attempts'].sum()
+    CourseStudentSuccess = clss['Curr_St_Successes'].sum()
+    course_df.at[i,'w_avgSR'] = CourseStudentSuccess/CourseStudentAttempts
+
+    #previous semesters for respective student at their current admission status
+    prev_adm_CourseStudentAttempts = clss['Adm_St_Attempts'].sum()
+    prev_adm_CourseStudentSuccess = clss['Adm_St_Successes'].sum()
+    course_df.at[i,'w_adm_avgSR'] = prev_adm_CourseStudentSuccess/prev_adm_CourseStudentAttempts
+
+    #all previous semesters for respective student
+    prev_CourseStudentAttempts = clss['Prev_St_Attempts'].sum()
+    prev_CourseStudentSuccess = clss['Prev_St_Successes'].sum()
+    course_df.at[i,'w_at_avgSR'] = prev_CourseStudentSuccess/prev_CourseStudentAttempts
+
+    major = pd.concat([clss['M1'],clss['M2']]).mode()
+    if len(major) > 0:
+        m = major.at[0]
+        course_df.at[i,'MCM'] = m
+    else:
+        course_df.at[i,'MCM'] = "Undeclared"
+    
+    degree = pd.concat([clss['DG1'],clss['DG2']]).mode()
+    if len(degree) > 0:
+        d = degree.at[0]
+        course_df.at[i,'MCD'] = d
+    else:
+        course_df.at[i,'MCD'] = "Undeclared"
+
+    if len(student_list) > 9:
+        course_df.at[i,'avgAge'] = clss['Age'].mean()
+    else:
+        course_df.at[i,'avgAge'] = 9999
+  course_slice = course_df[['Course','SR','Attempts','Withdraws','SR_course','SR_subject','AvgWs_course','AvgWs_subject','LastYear_SR_course','LastYear_SR_subject','LastYear_AvgWs_course','LastYear_AvgWs_subject','avgSR','adm_avgSR','at_avgSR','avgCreditLoad','avgRCCCredits','avgUGCredits','w_avgSR','w_adm_avgSR','w_at_avgSR','avgAge','MCM','MCD']]
+
+  return course_slice
