@@ -1,0 +1,56 @@
+import numpy as np
+import pandas as pd
+
+df = pd.read_csv("file2pivot.csv")
+
+def Pivot_Custom_Table(df, number_of_mains: int):
+    main1 = df.columns.to_list()[0]
+    main2, main3, main4, main5, main6, main7, main8 = '','_','__','___','____','_____','_______'
+    maine2, maine3, maine4, maine5, maine6, maine7, maine8 = '','','','','','',''
+    if number_of_mains < 1: output = print('Number of Mains must be more than 0') 
+    if number_of_mains > 8: output = print('Number of Mains must be less than 7') 
+    if number_of_mains > 1: 
+        main2 = df.columns.to_list()[1]
+    if number_of_mains > 2: 
+        main3 = df.columns.to_list()[2]
+    if number_of_mains > 3: 
+        main4 = df.columns.to_list()[3]
+    if number_of_mains > 4: 
+        main5 = df.columns.to_list()[4]
+    if number_of_mains > 5: 
+        main6 = df.columns.to_list()[5]
+    if number_of_mains > 6: 
+        main7 = df.columns.to_list()[6]
+    if number_of_mains > 7: 
+        main8 = df.columns.to_list()[7]
+
+    listy = [main1,main2,main3,main4]
+    out1 = pd.DataFrame(columns=df.columns.to_list()[:(number_of_mains-1)])
+    out2 = pd.DataFrame(columns=['Metric','Values'])
+    output = pd.concat([out1,out2], axis=1)
+    n=0
+    for i in df.index:
+        maine1 = df.loc[i,main1]
+        if number_of_mains > 1: 
+            maine2 = df.loc[i,main2]
+        if number_of_mains > 2: 
+            maine3 = df.loc[i,main3]
+        if number_of_mains > 3: 
+            maine4 = df.loc[i,main4]   
+        if number_of_mains > 4: 
+            maine5 = df.loc[i,main5]   
+        if number_of_mains > 5: 
+            maine6 = df.loc[i,main6]   
+        if number_of_mains > 6: 
+            maine7 = df.loc[i,main7]  
+        if number_of_mains > 7: 
+            maine8 = df.loc[i,main8]   
+        for c in df.columns.to_list()[number_of_mains:]:
+            metric = c
+            value = df.loc[i,c]
+            half1 = pd.DataFrame({main1:maine1,main2:maine2,main3:maine3,main4:maine4,main5:maine5,main6:maine6,main7:maine7,main8:maine8}, index = [n])
+            half2 = pd.DataFrame({'Metric':metric,'Values':value}, index = [n])
+            row = pd.concat([half1,half2], axis=1)
+            n=n+1
+            output = pd.concat([output,row])
+    return output
