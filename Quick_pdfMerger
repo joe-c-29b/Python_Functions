@@ -1,0 +1,8 @@
+from pypdf import PdfMerger
+pdfs = ['pdf4Merge_1.pdf','pdf4Merge_2.pdf']
+def Quick_pdfMerger():
+  merger = PdfMerger()
+  for pdf in pdfs:
+    merger.append(pdf)
+  merger.write("pdf_out.pdf")
+  merger.close()
