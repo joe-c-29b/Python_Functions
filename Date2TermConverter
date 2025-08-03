@@ -1,0 +1,81 @@
+import numpy as np
+import pandas as pd
+df = pd.read_csv("smurf.csv")
+
+def date2YRTR_begin(df,Name_of_column2convert,NewColumnName):
+    df['datestring'] = 0
+    df[NewColumnName] = 0
+    spr_term = ['01','02','03','04']
+    fal_term = ['09','10','11','12']
+    sum_term = ['06','07']
+    front_days = ['01','02','03','04','05','06','07','08','09','10','11','12','13','14','15']
+    for i in df.index:
+        date = df.loc[i, Name_of_column2convert]
+        df.loc[i,'datestring'] = date.astype('U')
+
+    for i in df.index:
+        if pd.isnull(df.loc[i, Name_of_column2convert]) == False:
+            yrtr = 0
+            fy = 0
+            yr = df.loc[i, 'datestring'][0:4]
+            mo = df.loc[i, 'datestring'][4:6]
+            day = df.loc[i, 'datestring'][6:]
+            if mo in fal_term:
+                fy = int(yr)+1
+                yrtr = f"{fy}3"
+            else:
+                if mo in spr_term:
+                    yrtr = f"{yr}5"
+                else:
+                    if mo in sum_term:
+                        fy = int(yr)+1
+                        yrtr = f"{fy}1"
+                    else:
+                        if mo == '05':
+                            if day in front_days:
+                                yrtr = f"{yr}5"
+                            else:
+                                fy = int(yr)+1
+                                yrtr = f"{fy}1"
+                        elif mo == '08':
+                            fy = int(yr)+1
+                            if day in front_days:
+                                yrtr = f"{fy}1"
+                            else:
+                                yrtr = f"{fy}3"
+                        
+            df.loc[i,NewColumnName] = int(yrtr)
+        else:
+            continue
+    df2 = df.drop(columns=['datestring'])
+    return df2
+
+def date2YRTR_end(df,Name_of_column2convert,NewColumnName):
+    df['datestring'] = 0
+    df[NewColumnName] = 0
+    spr_term = ['01','02','03','04','05','06']
+    fal_term = ['09','10','11','12']
+
+    for i in df.index:
+        date = df.loc[i, Name_of_column2convert]
+        df.loc[i,'datestring'] = date.astype('U')
+
+    for i in df.index:
+        yr = df.loc[i, 'datestring'][0:4]
+        ##optional section depending on what you need##
+        #if yr == '9999':
+        #    df.loc[i,'lastYRTR'] = 20245 #whatever the current semester is
+        ##################
+        mo = df.loc[i, 'datestring'][4:6]
+        day = df.loc[i, 'datestring'][6:]
+        if mo in fal_term:
+            fy = int(yr)+1
+            yrtr = f"{fy}3"
+        elif mo in spr_term:
+            yrtr = f"{yr}5"
+        else:
+            fy = int(yr)+1
+            yrtr = f"{fy}1"
+        df.loc[i,NewColumnName] = int(yrtr)
+    df2 = df.drop(columns=['datestring'])
+    return df2
