@@ -1,0 +1,13 @@
+import pandas as pd
+import numpy as np
+
+file = ".csv"
+
+def Convert2List_4SQLuse(file: str):
+  df = pd.read_csv(file)
+  string1 = "''00000000''"
+  for i in df.index:
+      d = df.iat[i,0]
+      c = str(d)
+      string1 = string1 + ",''" + c + "''"
+  return string1
