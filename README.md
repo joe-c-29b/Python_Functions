@@ -10,3 +10,7 @@ Pivot_Custom_Table - Function for creating pivot tables when using 2 to 8 demogr
 CourseSurveySummaryStatistics - Function for calculating some descriptive summary statistics for each individual course during the semester to accompany the end of term student survey results.
   input: 1 dataframe with information for each course offered for the current term, 1 dataframe with information for the students that were enrolled during the current semester, 1 dataframe to serve as a key between the summarized student data and the summarized course data.
   output: a dataframe showing descriptive summary statistics for each course.
+
+Date2TermConverter - Function for converting time/date values to academic terms.
+  input: 1 dataframe, the string value of the name of the column with the date/time values you are converting, the string value of the name of the new column you want created to house the academic term.
+  output: a new dataframe with a column that has the appropriate academic term.
