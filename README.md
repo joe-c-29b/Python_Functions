@@ -6,3 +6,7 @@ cohort_date2term_converter - a function for converting the begin and end dates o
 Pivot_Custom_Table - Function for creating pivot tables when using 2 to 8 demographic combinations. 
   input: a .csv file containing the dataframe that you wish to convert to a pivot table AND the # of columns that are going to be involved in the pivot.
   output: a pivot table matching the input needs.
+
+CourseSurveySummaryStatistics - Function for calculating some descriptive summary statistics for each individual course during the semester to accompany the end of term student survey results.
+  input: 1 dataframe with information for each course offered for the current term, 1 dataframe with information for the students that were enrolled during the current semester, 1 dataframe to serve as a key between the summarized student data and the summarized course data.
+  output: a dataframe showing descriptive summary statistics for each course.
