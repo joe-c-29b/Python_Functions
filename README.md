@@ -22,3 +22,7 @@ Quick_pdfMerger - A quick function to further simplify us of pypdf PdfMerger fun
 Convert2List_4SQLuse - A quick and easy function for converting long lists of strings in excel into lists for use in SQL WHERE clause.
   input: a string value that is the name of the .csv that contains the list of strings that you want converted.
   output: a list that can be copied and pasted into an SQL WHERE ________ IN () clause.
+
+MessyApptSystem_Cleaner - a Python function that takes a messy .csv created by copying and pasting out of a an online scheduling system that does not offer a downloading option for the data; returns a cleaned dataframe with proper columns and rows.
+  input: a very messy .csv without proper columns or rows
+  output: a clean dataframe with proper columns and rows
