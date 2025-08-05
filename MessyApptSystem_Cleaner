@@ -1,0 +1,66 @@
+import pandas as pd
+import numpy as np
+df = pd.read_csv("AppointmentData.csv")
+
+def mathTutoring_cleaner(df):
+    #variables
+    mon,tue,wed,thu,fri,sat,sun = "Monday, ","Tuesday, ","Wednesday, ","Thursday, ","Friday, ","Saturday, ","Sunday, "
+    am,pm = "am to","pm to"
+    monthDict = {"January":1,"February":2,"March":3,"April":4,"May":5,"June":6,"July":7,"August":8,"September":9,"October":10,"November":11,"December":12}
+    semesterDict = {"January":"Spring","February":"Spring","March":"Spring","April":"Spring","May":"Spring","June":"Summer","July":"Summer","August":"Summer","September":"Fall","October":"Fall","November":"Fall","December":"Fall"}
+    timeDict = {"12:00 am": 0.0,"12:30 am": 0.5,"1:00 am": 1.0,"1:30 am": 1.5,"2:00 am": 2.0,"2:30 am": 2.5,"3:00 am": 3.0,"3:30 am": 3.5,"4:00 am": 4.0,"4:30 am": 4.5,"5:00 am": 5.0,"5:30 am": 5.5,"6:00 am": 6.0,"6:30 am": 6.5,"7:00 am": 7.0,"7:30 am": 7.5,"8:00 am": 8.0,"8:30 am": 8.5,"9:00 am": 9.0,"9:30 am": 9.5,"10:00 am": 10.0,"10:30 am": 10.5,"11:00 am": 11.0,"11:30 am": 11.5,"12:00 pm": 12.0,"12:30 pm": 12.5,"1:00 pm": 13.0,"1:30 pm": 13.5,"2:00 pm": 14.0,"2:30 pm": 14.5,"3:00 pm": 15.0,"3:30 pm": 15.5,"4:00 pm": 16.0,"4:30 pm": 16.5,"5:00 pm": 17.0,"5:30 pm": 17.5,"6:00 pm": 18.0,"6:30 pm": 18.5,"7:00 pm": 19.0,"7:30 pm": 19.5,"8:00 pm": 20.0,"8:30 pm": 20.5,"9:00 pm": 21.0,"9:30 pm": 21.5,"10:00 pm": 22.0,"10:30 pm": 22.5,"11:00 pm": 23.0,"11:30 pm": 23.5}
+    #this part is system specific; in this case, dealing with tutoring appointment system
+    st,ca,ia,pc,al,cg,ma,cal,sta = "stats","college alg","inter. alg","precalc","algebra","clgalg","math","calc","statistics"
+    dayList,dateList,monthList,yearList,scheduleList,subjectList,startList,endList,lengthList,semesterList = [],[],[],[],[],[],[],[],[],[]
+    for i in df.index:
+        string = df.at[i,'DATA']
+        check1 = (string.count(mon) + string.count(tue) + string.count(wed) + string.count(thu) + string.count(fri) + string.count(sat) + string.count(sun))
+        if check1 > 0:
+            day, datemonth, year = string.split(", ")
+            dayList.append(day)
+            yearList.append(year)
+            monthish, date = datemonth.split(" ")
+            dateList.append(date)
+            month = monthDict[monthish]
+            monthList.append(month)
+            sem = semesterDict[monthish]
+            semesterList.append(sem)
+        elif "Schedule:" in string:
+            sched = string.strip("Schedule: ")
+            scheduleList.append(sched)
+        elif "Resource:" in string:
+            rid, tutsubj1 = string.split(":",1)
+            tutsubj = tutsubj1.lower()
+            if tutsubj.count(ca) + tutsubj.count(ia) + tutsubj.count(al) + tutsubj.count(cg) > 0:
+                if tutsubj.count(st) + tutsubj.count(sta) + tutsubj.count(pc) + tutsubj.count(cal) == 0:
+                    subjectList.append("Algebra")
+                elif tutsubj.count(st) + tutsubj.count(sta) > 0:
+                    subjectList.append("Algebra & Statistics")
+                else:
+                    subjectList.append("Algebra & Calc")
+            elif tutsubj.count(st) + tutsubj.count(sta) > 0:
+                if tutsubj.count(pc) + tutsubj.count(cal) == 0:
+                    subjectList.append("Statistics")
+                else:
+                    subjectList.append("Statistics & Calc")
+            elif tutsubj.count(pc) + tutsubj.count(cal) > 0:
+                subjectList.append("Calc")
+            elif tutsubj.count(ma) > 0:
+                subjectList.append("Math")
+            else:
+                subjectList.append(tutsubj)
+        elif (string.count(am) + string.count(pm)) > 0:
+            startish, endish = string.split(" to ")
+            start = timeDict[startish]
+            end = timeDict[endish]
+            length = end-start
+            startList.append(start)
+            endList.append(end)
+            lengthList.append(length)
+            
+        #elif string.count("Options") + string.count("File") + string.count("Placeholder") + string.count("Walk-In") + string.count("Online Zoom Meeting") == 0:
+            #studentList.append(string)
+            #,"Student": studentList
+    cleaned = pd.DataFrame({"DayOfWeek":dayList,"Semester":semesterList,"Date": dateList,"Month":monthList,"Year": yearList,"StartTime": startList,"EndTime": endList,
+                            "ApptLength": lengthList,"AppointmentType": scheduleList,"Subject":subjectList})
+    return cleaned
